@@ -59,7 +59,7 @@ export default function LoginPage() {
             </div>
           </Link>
           <h1 className="text-2xl font-black text-white">Welcome Back</h1>
-          <p className="text-sm text-gray-500 mt-1">Log in to access your trading dashboard</p>
+          <p className="text-sm text-gray-500 mt-1">Enter your credentials to access your account</p>
         </div>
 
         <div className="glass-card p-7">
@@ -117,9 +117,9 @@ export default function LoginPage() {
               type="submit"
               id="login-submit-btn"
               disabled={loading}
-              className="w-full py-3.5 text-sm font-bold rounded-xl btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-3.5 text-sm font-bold rounded-xl btn-primary disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             >
-              {loading ? 'Logging in…' : 'Log In & Open Dashboard'}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>

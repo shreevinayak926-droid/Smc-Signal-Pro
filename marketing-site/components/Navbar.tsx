@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, TrendingUp, ArrowRight } from 'lucide-react';
+import { Menu, X, TrendingUp } from 'lucide-react';
 
 const navLinks = [
   { label: 'Features', href: '/features' },
@@ -16,23 +16,11 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<{ name?: string; role?: string } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('smc_user_session');
-      if (stored) {
-        setUser(JSON.parse(stored));
-      }
-    } catch {
-      // ignore
-    }
   }, []);
 
   return (
@@ -45,7 +33,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-18">
-          {/* Logo & Brand Name (Enlarged, Bold & Highly Attractive) */}
+          {/* Logo & Brand Name (Bold, High Visual Impact) */}
           <Link href="/" className="flex items-center gap-3.5 group select-none" aria-label="SMC Signal Home">
             <div className="relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0">
               <div className="absolute inset-0 bg-[#00FFA3]/30 rounded-2xl blur-md group-hover:bg-[#00FFA3]/50 transition-all duration-300" />
@@ -76,32 +64,20 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop CTA (Clean & Direct - No Admin/Terminal Exposed) */}
+          {/* Desktop CTA: Dedicated Log In and Get Started Free */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
-              <Link
-                href="/dashboard"
-                className="px-5 py-2.5 text-sm font-bold rounded-xl btn-primary flex items-center gap-2 shadow-lg shadow-[#00FFA3]/20 hover:scale-[1.02] transition-all"
-              >
-                <span>Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="px-5 py-2.5 text-sm font-bold rounded-xl btn-primary flex items-center gap-1.5 shadow-lg shadow-[#00FFA3]/20 hover:scale-[1.02] transition-all"
-                >
-                  Get Started Free
-                </Link>
-              </>
-            )}
+            <Link
+              href="/login"
+              className="px-4 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/signup"
+              className="px-5 py-2.5 text-sm font-bold rounded-xl btn-primary flex items-center gap-1.5 shadow-lg shadow-[#00FFA3]/20 hover:scale-[1.02] transition-all"
+            >
+              Get Started Free
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -131,32 +107,20 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="pt-4 border-t border-[#1E2433]/70 space-y-2">
-              {user ? (
-                <Link
-                  href="/dashboard"
-                  onClick={() => setIsOpen(false)}
-                  className="block px-4 py-3.5 text-sm font-bold rounded-xl btn-primary text-center shadow-lg shadow-[#00FFA3]/20"
-                >
-                  Go to Dashboard
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all text-center"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    href="/signup"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3.5 text-sm font-bold rounded-xl btn-primary text-center shadow-lg shadow-[#00FFA3]/20"
-                  >
-                    Get Started Free
-                  </Link>
-                </>
-              )}
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 text-sm font-semibold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all text-center"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3.5 text-sm font-bold rounded-xl btn-primary text-center shadow-lg shadow-[#00FFA3]/20"
+              >
+                Get Started Free
+              </Link>
             </div>
           </div>
         </div>
