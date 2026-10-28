@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-bg: #0A0B0D;
+  --brand-surface: #0E1015;
+  --brand-card: #12151D;
+  --brand-border: #1E2433;
+  --brand-green: #00FFA3;
+  --brand-gold: #FFD700;
+  --brand-purple: #A855F7;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--brand-bg);
+  color: #F3F4F6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--brand-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3748;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-green);
+}
+
+/* Glow utility */
+.glow-green {
+  text-shadow: 0 0 20px rgba(0, 255, 163, 0.5);
+}
+
+.glow-border {
+  box-shadow: 0 0 0 1px rgba(0, 255, 163, 0.3), 0 0 20px rgba(0, 255, 163, 0.1);
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(18, 21, 29, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 36, 51, 0.8);
+  border-radius: 16px;
+}
+
+/* Animated gradient background */
+.gradient-hero {
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0, 255, 163, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(168, 85, 247, 0.04) 0%, transparent 50%),
+              #0A0B0D;
+}
+
+/* Ticker bar animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-animation {
+  animation: ticker 40s linear infinite;
+}
+
+/* Pulse animation for live dot */
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 163, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0, 255, 163, 0); }
+}
+
+.pulse-green {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+/* Chart wave animation */
+@keyframes draw-wave {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.wave-line {
+  stroke-dasharray: 1000;
+  animation: draw-wave 3s ease forwards;
+}
+
+/* Feature card hover */
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 255, 163, 0.06);
+  border-color: rgba(0, 255, 163, 0.2);
+}
+
+/* Price badge */
+.price-badge {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(0, 255, 163, 0.05));
+  border: 1px solid rgba(0, 255, 163, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #00FFA3, #00D182);
+  color: #0A0B0D;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 255, 163, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.4);
+  color: #00FFA3;
+  transition: all 0.25s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(0, 255, 163, 0.08);
+  border-color: #00FFA3;
+  transform: translateY(-1px);
+}
+
+/* Input styles */
+.input-dark {
+  background: rgba(14, 16, 21, 0.8);
+  border: 1px solid #1E2433;
+  color: #F3F4F6;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-dark:focus {
+  outline: none;
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 255, 163, 0.1);
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #1E2433, transparent);
+}
+
+/* Mobile menu backdrop */
+.mobile-backdrop {
+  background: rgba(10, 11, 13, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+/* Fade in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.delay-100 { animation-delay: 0.1s; opacity: 0; }
+.delay-200 { animation-delay: 0.2s; opacity: 0; }
+.delay-300 { animation-delay: 0.3s; opacity: 0; }
+.delay-400 { animation-delay: 0.4s; opacity: 0; }

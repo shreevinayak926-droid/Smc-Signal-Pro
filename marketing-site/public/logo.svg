@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0A0B0D"/>
+  
+  <!-- Circuit board subtle grid -->
+  <g opacity="0.08" stroke="#00FFA3" stroke-width="1" fill="none">
+    <line x1="0" y1="128" x2="512" y2="128"/>
+    <line x1="0" y1="256" x2="512" y2="256"/>
+    <line x1="0" y1="384" x2="512" y2="384"/>
+    <line x1="128" y1="0" x2="128" y2="512"/>
+    <line x1="256" y1="0" x2="256" y2="512"/>
+    <line x1="384" y1="0" x2="384" y2="512"/>
+  </g>
+
+  <!-- Glow filter -->
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="goldGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="chartGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FFA3" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#00FFA3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Chart line (SMC signal wave) -->
+  <!-- Area fill under chart -->
+  <path d="M60 360 L60 310 L120 290 L160 260 L200 295 L230 245 L270 190 L310 210 L340 160 L390 120 L440 100 L480 80 L480 360 Z" 
+        fill="url(#chartGrad)" opacity="0.12"/>
+
+  <!-- Main neon chart wave -->
+  <polyline 
+    points="60,310 120,290 160,260 200,295 230,245 270,190 310,210 340,160 390,120 440,100 480,80"
+    stroke="#00FFA3" stroke-width="5" fill="none" 
+    filter="url(#glow)" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Gold peak dots -->
+  <circle cx="340" cy="160" r="9" fill="#FFD700" filter="url(#goldGlow)"/>
+  <circle cx="270" cy="190" r="7" fill="#FFD700" opacity="0.8" filter="url(#goldGlow)"/>
+  <circle cx="480" cy="80" r="10" fill="#FFD700" filter="url(#goldGlow)"/>
+
+  <!-- Green peak dot (entry) -->
+  <circle cx="230" cy="245" r="8" fill="#00FFA3" filter="url(#glow)"/>
+
+  <!-- Vertical signal lines (order blocks) -->
+  <line x1="230" y1="245" x2="230" y2="360" stroke="#00FFA3" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.4"/>
+  <line x1="340" y1="160" x2="340" y2="360" stroke="#FFD700" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.4"/>
+
+  <!-- SMC Text -->
+  <text x="256" y="440" 
+        font-family="'Arial Black', sans-serif" 
+        font-size="72" font-weight="900"
+        text-anchor="middle" 
+        fill="#FFFFFF" 
+        letter-spacing="6"
+        filter="url(#glow)">SMC</text>
+
+  <!-- Subtitle -->
+  <text x="256" y="478" 
+        font-family="Arial, sans-serif" 
+        font-size="22" font-weight="400"
+        text-anchor="middle" 
+        fill="#00FFA3"
+        letter-spacing="8"
+        opacity="0.85">SIGNAL PRO</text>
+</svg>

@@ -1,0 +1,19 @@
+# IDE & OS
+.idea/
+.vscode/
+New folder/
+
+# Dependencies & Build
+node_modules/
+.next/
+dist/
+build/
+
+# Local Environment Variables
+.env
+.env.local
+.env*.local
+
+# Logs
+*.log
+npm-debug.log*
