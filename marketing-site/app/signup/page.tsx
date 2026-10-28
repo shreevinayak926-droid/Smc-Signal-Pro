@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { TrendingUp, Eye, EyeOff, CheckCircle, Mail } from 'lucide-react';
+import { TrendingUp, Eye, EyeOff, CheckCircle, Mail, ExternalLink, RefreshCw } from 'lucide-react';
 import { supabaseAuthService } from '@/trading/services/supabaseAuth';
 
 export default function SignupPage() {
@@ -11,6 +11,8 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendStatus, setResendStatus] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -23,10 +25,11 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
+      // NOTE: Signature is (email, password, name)
       const res = await supabaseAuthService.register(
-        form.name.trim(),
         form.email.trim().toLowerCase(),
-        form.password
+        form.password,
+        form.name.trim()
       );
 
       if (!res.success) {
@@ -34,13 +37,13 @@ export default function SignupPage() {
         return;
       }
 
-      // If email verification is enforced
-      if (res.needsEmailVerification) {
+      // If email verification is pending or sent
+      if (res.needsEmailVerification || !res.user?.emailVerified) {
         setSuccess(true);
         return;
       }
 
-      // If direct access is granted (no email verification block or already verified)
+      // If direct access is granted
       window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err?.message || 'An unexpected error occurred. Please try again.');
@@ -49,26 +52,114 @@ export default function SignupPage() {
     }
   };
 
+  const handleResend = async () => {
+    if (!form.email || resending) return;
+    setResending(true);
+    setResendStatus(null);
+    try {
+      const res = await supabaseAuthService.resendVerificationEmail(form.email.trim().toLowerCase());
+      if (res.success) {
+        setResendStatus('Verification email resent successfully! Check your inbox.');
+      } else {
+        setResendStatus(res.message || 'Could not resend email. Please try again shortly.');
+      }
+    } catch {
+      setResendStatus('Failed to resend email. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center p-4">
-        <div className="glass-card p-10 max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#00FFA3]/10 border border-[#00FFA3]/20 flex items-center justify-center mx-auto mb-5">
-            <Mail className="w-8 h-8 text-[#00FFA3]" />
+      <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Glow ambient background */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#00FFA3]/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="relative glass-card p-8 sm:p-10 max-w-lg w-full text-center border border-[#00FFA3]/30 shadow-2xl shadow-[#00FFA3]/10">
+          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-[#00FFA3]/20 to-[#00FFA3]/5 border-2 border-[#00FFA3]/40 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#00FFA3]/20">
+            <Mail className="w-10 h-10 text-[#00FFA3]" />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#00FFA3] flex items-center justify-center shadow-md">
+              <CheckCircle className="w-4 h-4 text-black" />
+            </div>
           </div>
-          <h1 className="text-2xl font-black text-white mb-3">Check Your Email</h1>
-          <p className="text-gray-400 mb-2 text-sm leading-relaxed">
-            We sent a verification link to <strong className="text-white">{form.email}</strong>.
+
+          <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase text-[#00FFA3] bg-[#00FFA3]/10 rounded-full border border-[#00FFA3]/20 mb-3">
+            Action Required
+          </span>
+
+          <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight">
+            Verification Email Sent!
+          </h1>
+
+          <p className="text-gray-300 text-sm leading-relaxed mb-4">
+            We&apos;ve sent an activation link to:
           </p>
-          <p className="text-gray-500 text-sm mb-7 leading-relaxed">
-            Click the link in the email to verify your account, then return here to log in and access the trading dashboard.
+          <div className="bg-[#12141A] border border-gray-800 rounded-xl px-4 py-2.5 mb-5 inline-block max-w-full">
+            <span className="text-[#00FFA3] font-bold text-sm tracking-wide break-all">
+              {form.email}
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-xs sm:text-sm mb-6 leading-relaxed">
+            Please open the email from <strong className="text-white">smcsignalpro@gmail.com</strong> (SMC Signal Pro) and click the confirmation link to activate your account and start your 24-hour trial.
           </p>
+
+          {/* Useful Tips */}
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-300/90 text-left mb-6">
+            <p className="font-semibold mb-0.5">Haven&apos;t received it yet?</p>
+            <p className="text-gray-400">
+              Please check your <strong>Spam</strong> or <strong>Junk</strong> folder. Sometimes emails take 1-2 minutes to arrive.
+            </p>
+          </div>
+
+          {resendStatus && (
+            <div className="mb-5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300">
+              {resendStatus}
+            </div>
+          )}
+
           <div className="space-y-3">
-            <Link href="/login" className="block w-full py-3 text-sm font-bold rounded-xl btn-primary text-center">
-              Go to Login
-            </Link>
-            <Link href="/" className="block text-sm text-gray-500 hover:text-gray-300 transition-colors">
-              Return to Home
+            {form.email.includes('@gmail.com') ? (
+              <a
+                href="https://mail.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 px-4 text-sm font-bold rounded-xl btn-primary flex items-center justify-center gap-2"
+              >
+                Open Gmail Inbox
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            ) : (
+              <Link
+                href="/login"
+                className="block w-full py-3.5 px-4 text-sm font-bold rounded-xl btn-primary text-center"
+              >
+                Proceed to Login
+              </Link>
+            )}
+
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resending}
+                className="flex-1 py-2.5 px-3 rounded-xl border border-gray-800 hover:border-gray-700 bg-[#12141A] text-xs font-semibold text-gray-300 hover:text-white transition flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin text-[#00FFA3]' : ''}`} />
+                {resending ? 'Sending...' : 'Resend Email'}
+              </button>
+
+              <Link
+                href="/login"
+                className="flex-1 py-2.5 px-3 rounded-xl border border-gray-800 hover:border-gray-700 bg-[#12141A] text-xs font-semibold text-gray-300 hover:text-white transition text-center"
+              >
+                Go to Login
+              </Link>
+            </div>
+
+            <Link href="/" className="block pt-2 text-xs text-gray-500 hover:text-gray-400 transition-colors">
+              Return to Homepage
             </Link>
           </div>
         </div>

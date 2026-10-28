@@ -1,16 +1,25 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { TrendingUp, Eye, EyeOff } from 'lucide-react';
+import { TrendingUp, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { supabaseAuthService } from '@/trading/services/supabaseAuth';
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [verifiedMsg, setVerifiedMsg] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('verified') === 'true' || searchParams.get('confirmed') === 'true') {
+      setVerifiedMsg(true);
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -42,6 +51,79 @@ export default function LoginPage() {
   };
 
   return (
+    <div className="glass-card p-7">
+      {verifiedMsg && (
+        <div className="mb-4 p-3.5 bg-[#00FFA3]/10 border border-[#00FFA3]/30 rounded-xl flex items-center gap-2.5 text-xs text-[#00FFA3]">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>Email verified successfully! You can now log in to access your dashboard.</span>
+        </div>
+      )}
+
+      <form onSubmit={handleLogin} className="space-y-4" noValidate>
+        <div>
+          <label htmlFor="login-email" className="block text-xs font-semibold text-gray-400 mb-1.5">Email Address</label>
+          <input
+            id="login-email"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full px-4 py-3 input-dark text-sm"
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label htmlFor="login-password" className="text-xs font-semibold text-gray-400">Password</label>
+            <Link href="/forgot-password" className="text-xs text-[#00FFA3]/70 hover:text-[#00FFA3] transition-colors">
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
+            <input
+              id="login-password"
+              type={showPw ? 'text' : 'password'}
+              required
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              className="w-full px-4 py-3 pr-11 input-dark text-sm"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+              aria-label={showPw ? 'Hide password' : 'Show password'}
+            >
+              {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-3 bg-red-900/20 border border-red-800/40 rounded-lg">
+            <p className="text-xs text-red-400">{error}</p>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          id="login-submit-btn"
+          disabled={loading}
+          className="w-full py-3.5 text-sm font-bold rounded-xl btn-primary disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+        >
+          {loading ? 'Signing in...' : 'Sign In'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className="min-h-screen bg-[#0A0B0D] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
@@ -62,67 +144,9 @@ export default function LoginPage() {
           <p className="text-sm text-gray-500 mt-1">Enter your credentials to access your account</p>
         </div>
 
-        <div className="glass-card p-7">
-          <form onSubmit={handleLogin} className="space-y-4" noValidate>
-            <div>
-              <label htmlFor="login-email" className="block text-xs font-semibold text-gray-400 mb-1.5">Email Address</label>
-              <input
-                id="login-email"
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 input-dark text-sm"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="login-password" className="text-xs font-semibold text-gray-400">Password</label>
-                <Link href="/forgot-password" className="text-xs text-[#00FFA3]/70 hover:text-[#00FFA3] transition-colors">
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <input
-                  id="login-password"
-                  type={showPw ? 'text' : 'password'}
-                  required
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Your password"
-                  className="w-full px-4 py-3 pr-11 input-dark text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
-                  aria-label={showPw ? 'Hide password' : 'Show password'}
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-900/20 border border-red-800/40 rounded-lg">
-                <p className="text-xs text-red-400">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              id="login-submit-btn"
-              disabled={loading}
-              className="w-full py-3.5 text-sm font-bold rounded-xl btn-primary disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-        </div>
+        <Suspense fallback={<div className="glass-card p-7 text-center text-gray-400 text-sm">Loading...</div>}>
+          <LoginForm />
+        </Suspense>
 
         <p className="text-center text-sm text-gray-500 mt-5">
           Don&apos;t have an account?{' '}

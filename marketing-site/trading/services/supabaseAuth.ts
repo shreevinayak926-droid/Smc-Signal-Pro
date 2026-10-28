@@ -34,7 +34,7 @@ export const supabaseAuthService = {
             name: cleanName,
             full_name: cleanName,
           },
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/login?verified=true` : undefined,
         },
       });
 
@@ -71,7 +71,7 @@ export const supabaseAuthService = {
       const durationMs = isAdmin ? 365 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
       const expiresAt = now + durationMs;
       const isEmailConfirmed = Boolean(sbUser.email_confirmed_at);
-      const needsEmailVerification = !data.session && !isEmailConfirmed;
+      const needsEmailVerification = !isEmailConfirmed || !data.session;
 
       const newUser: User = {
         id: sbUser.id,
@@ -148,7 +148,7 @@ export const supabaseAuthService = {
         type: 'signup',
         email: cleanEmail,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/login?verified=true` : undefined,
         },
       });
       if (error) {
